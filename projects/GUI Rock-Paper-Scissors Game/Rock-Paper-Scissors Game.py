@@ -1,74 +1,92 @@
-# Import Required Library
-from tkinter import *
-from tkinter import ttk
-from random import *
+import tkinter as tk
+from random import choice
 
-# Create Object
-root = Tk()
+# -------------------------
+# Main Window
+# -------------------------
+root = tk.Tk()
+root.title("Rock-Paper-Scissors")
+root.geometry("450x500")
+root.config(bg="#1e3a8a")  # Blue background
 
-# Set geometry
-root.geometry("500x500")
+# -------------------------
+# Variables
+# -------------------------
+choices = ["Rock ✊", "Paper ✋", "Scissors ✌️"]
+player_score = 0
+computer_score = 0
+ties = 0
 
-root.title("Rock-Paper-Scissors-Game")
+# -------------------------
+# Functions
+# -------------------------
+def play(player_choice):
+    global player_score, computer_score, ties
 
-# List of players
-list = ["rock","paper","scissors"]
+    computer_choice = choice(choices)
+    result = ""
 
-choose_number = randint(0,2)
-print(choose_number) # For testing if it works
+    if player_choice == computer_choice:
+        result = f"🤝 Tie! Both chose {player_choice}"
+        ties += 1
+    elif (player_choice.startswith("Rock") and computer_choice.startswith("Scissors")) or \
+         (player_choice.startswith("Paper") and computer_choice.startswith("Rock")) or \
+         (player_choice.startswith("Scissors") and computer_choice.startswith("Paper")):
+        result = f"🎉 You Win! {player_choice} beats {computer_choice}"
+        player_score += 1
+    else:
+        result = f"😢 You Lose! {computer_choice} beats {player_choice}"
+        computer_score += 1
 
-label = Label(root,text="Computer ",width = 20,height=4,font=("algerian",15))
-label.pack()
+    result_label.config(text=result)
+    score_label.config(text=f"Player: {player_score} | Computer: {computer_score} | Ties: {ties}")
 
-def spin():
-    choose_number = randint(0,2)
-    label.config(text=list[choose_number])
-    if user_select.get() == "Rock":
-        user_select_value = 0
-        print(user_select_value)
-    elif user_select.get() == "Paper":
-        user_select_value = 1
-        print(user_select_value)
-    elif user_select.get() == "Scissors":
-        user_select_value = 2
-        print(user_select_value)
+def reset_game():
+    global player_score, computer_score, ties
+    player_score = computer_score = ties = 0
+    result_label.config(text="Make your move!")
+    score_label.config(text="Player: 0 | Computer: 0 | Ties: 0")
 
-    if user_select_value == 0:
-        if choose_number == 0:
-            wl_label.config(text="Tie! - "+" Computer:Bad luck")
-        elif choose_number == 1:
-            wl_label.config(text="YOU Loose - "+" Computer: I am better ")
-        elif choose_number == 2 :
-            wl_label.config(text="YOU Won - "+" Computer: You won by luck")
+# -------------------------
+# UI Elements
+# -------------------------
+title_label = tk.Label(root, text="Rock - Paper - Scissors", font=("Helvetica", 20, "bold"),
+                       fg="#FFD60A", bg="#1e3a8a")  # Yellow text
+title_label.pack(pady=20)
 
-    elif user_select_value == 1:
-        if choose_number == 1:
-            wl_label.config(text="Tie! - "+" Computer: Nice game")
-        elif choose_number == 0:
-            wl_label.config(text="YOU Won - "+" Computer: Shit how you are better")
-        elif choose_number == 2 :
-            wl_label.config(text="YOU Loose - "+" Computer: booo")
+# Result label
+result_label = tk.Label(root, text="Make your move!", font=("Helvetica", 16),
+                        fg="#FFD60A", bg="#1e3a8a")
+result_label.pack(pady=10)
 
-    elif user_select_value == 2:
-        if choose_number == 2:
-            wl_label.config(text="Tie!")
-        elif choose_number == 0:
-            wl_label.config(text="YOU Loose - "+" Computer: I am playing this game since i was born")
-        elif choose_number == 1 :
-            wl_label.config(text="YOU Won")
+# Score label
+score_label = tk.Label(root, text="Player: 0 | Computer: 0 | Ties: 0", font=("Helvetica", 14),
+                       fg="#FFD60A", bg="#1e3a8a")
+score_label.pack(pady=10)
 
+# Buttons
+button_frame = tk.Frame(root, bg="#1e3a8a")
+button_frame.pack(pady=30)
 
+rock_btn = tk.Button(button_frame, text="Rock ✊", width=10, font=("Helvetica", 14, "bold"),
+                     bg="#FFD60A", fg="#1e3a8a", activebackground="#FFF176",
+                     command=lambda: play("Rock ✊"))
+rock_btn.grid(row=0, column=0, padx=10, pady=10)
 
-# Adding dropdown box for Rock,Paper,Scissors
-user_select = ttk.Combobox(root,value=["Rock","Paper","Scissors"])
-user_select.current(0)
-user_select.pack()
+paper_btn = tk.Button(button_frame, text="Paper ✋", width=10, font=("Helvetica", 14, "bold"),
+                      bg="#FFD60A", fg="#1e3a8a", activebackground="#FFF176",
+                      command=lambda: play("Paper ✋"))
+paper_btn.grid(row=0, column=1, padx=10, pady=10)
 
-# Add Labels,Button
-wl_label = Label(root,text="",font=("arial",10),width=50,height=4)
-wl_label.pack()
+scissors_btn = tk.Button(button_frame, text="Scissors ✌️", width=10, font=("Helvetica", 14, "bold"),
+                         bg="#FFD60A", fg="#1e3a8a", activebackground="#FFF176",
+                         command=lambda: play("Scissors ✌️"))
+scissors_btn.grid(row=0, column=2, padx=10, pady=10)
 
-button = Button(root,text="Spin!",font=("bell mt",10),command=spin)
-button.pack()
+# Reset button
+reset_btn = tk.Button(root, text="Reset Score", font=("Helvetica", 14, "bold"),
+                      bg="#FFD60A", fg="#1e3a8a", width=20, activebackground="#FFF176",
+                      command=reset_game)
+reset_btn.pack(pady=20)
 
 root.mainloop()
